@@ -53,6 +53,14 @@ body.survival {margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(
 .survival #detail dd {margin:0 0 .43em .4em}
 .survival #history {list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:var(--gap);margin:0}
 .survival #history li {display:flex;align-items:center;flex-wrap:wrap}
+.survival #history input[type="checkbox"] {accent-color:var(--accent);width:1em;height:1em;margin-right:6px}
+.survival .monthly {margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.survival .monthly .hint,.survival .monthly-date,.survival .monthly-summary {color:var(--muted)}
+.survival .monthly h3 {font-size:15px;margin:12px 0 6px}
+.survival #monthly-list {list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:var(--gap);margin:10px 0}
+.survival #monthly-list li {display:flex;align-items:center;gap:6px}
+.survival #monthly-detail ul {margin:0;padding-left:1.2em}
+.survival #monthly-detail table {margin-top:8px}
 .survival #review {margin-top:14px;max-width:580px}
 .survival textarea {display:block;width:100%;min-height:54px;cursor:text}
 .survival .review-actions {display:flex;gap:6px;margin:8px 0}

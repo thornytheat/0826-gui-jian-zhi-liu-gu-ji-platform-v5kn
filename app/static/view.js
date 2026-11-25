@@ -22,7 +22,8 @@ const labels = {READY:'通过', MISMATCH:'数值不符', PENDING:'待复核', AP
   INVALID_SAMPLE:'样本登记无效', INVALID_REGISTER:'作者登记无效', INVALID_SIMILARITY:'相似度无效',
   AUTHORITY_EXCLUSION_CONFLICT:'权威编号与禁用关系冲突', HISTORY_LIMIT:'历史窗口过长',
   DAY_OUT_OF_RANGE:'观测日超出范围', INVALID_COHORT:'入柜队列无效', PICKUP_CONFLICT:'领取记录冲突',
-  INVALID_OBSERVATION:'抽检记录无效', INVALID_SAMPLE_REGISTRY:'样本记录无效'};
+  INVALID_OBSERVATION:'抽检记录无效', INVALID_SAMPLE_REGISTRY:'样本记录无效',
+  ENTRY_CONFLICT:'入柜时刻冲突', PICKUP_TIME_CONFLICT:'取件时刻冲突', CENSORED_AFTER_PICKUP:'取件后仍记未取'};
 
 const valueLabels = {RPD:'相对偏差', ABSOLUTE:'绝对差', BOTH_ND:'双方未检出', MIXED_LOD:'一侧低于检出限',
   EQUALITY:'等值删除', POSITION:'位置删除', PRIMARY:'初次遮蔽', SECONDARY:'追加遮蔽',
@@ -106,14 +107,66 @@ export function snapshot(report, selected, stage) {
   document.querySelector('#counts').textContent = report.balance ? `行数 ${report.balance.accounted}/${report.balance.input} · ${report.balance.ready} 组通过` : `采信 ${stats.accepted} 行 · 隔离 ${stats.rejected} 行`;
 }
 
-export function history(items, active) {
+export function history(items, active, picked = new Set()) {
   const target = document.querySelector('#history');
   target.replaceChildren();
   for (const run of items) {
     const button = element('button', run.id.slice(0,10), {'data-run':run.id,'aria-pressed':String(run.id===active),type:'button'});
     const item = element('li');
+    if (run.status === 'APPROVED') {
+      const box = element('input', undefined, {type:'checkbox','data-pick':run.id,title:'并入月报'});
+      box.checked = picked.has(run.id);
+      item.append(box);
+    }
     item.append(button, badge(run.status));
     target.append(item);
   }
   if (!items.length) target.append(element('li','尚无执行批次'));
+}
+
+export function monthlyList(items, active) {
+  const target = document.querySelector('#monthly-list');
+  target.replaceChildren();
+  for (const doc of items) {
+    const button = element('button', doc.id.slice(0,10), {'data-monthly':doc.id,'aria-pressed':String(doc.id===active),type:'button'});
+    const item = element('li');
+    item.append(button, element('span', (doc.created || '').slice(0,10), {class:'monthly-date'}));
+    target.append(item);
+  }
+  if (!items.length) target.append(element('li','尚无月报'));
+}
+
+export function monthlyDetail(doc) {
+  const target = document.querySelector('#monthly-detail');
+  target.replaceChildren();
+  if (!doc) return;
+  const report = doc.report;
+  const s = report.summary;
+  target.append(element('p', `合并 ${s.batches} 批 · 逐件 ${s.items} 件（已取 ${s.picked} · 未取 ${s.censored}）· 冲突剔除 ${s.conflicts} 件 · 缺证批次 ${s.unsubstantiated}`, {class:'monthly-summary'}));
+  if (report.cases.length) {
+    const table = element('table');
+    const head = element('tr');
+    head.append(...['业务分组', '件数', '已取', '未取', '滞留估计'].map(title => element('th', title, {scope:'col'})));
+    table.createTHead().append(head);
+    const body = table.createTBody();
+    for (const row of report.cases) {
+      const tr = body.insertRow();
+      [row.case, row.items, row.picked, row.censored, `${row.measure.value} ${row.measure.unit}`].forEach(value => tr.insertCell().textContent = value);
+    }
+    target.append(table);
+  }
+  if (report.conflicts.length) {
+    target.append(element('h3', '取件冲突（对账来源）'));
+    const list = element('ul');
+    for (const c of report.conflicts) {
+      list.append(element('li', `${c.case} 组 ${c.parcel} 号件 · ${labels[c.reason] || c.reason} · 取件时刻 ${c.exits.join(' / ') || '—'} · 来自批次 ${c.runs.map(r => r.slice(0,10)).join('、')}`));
+    }
+    target.append(list);
+  }
+  if (report.unsubstantiated.length) {
+    target.append(element('h3', '缺证批次（仅剩分组估计，未并入逐件重算）'));
+    const list = element('ul');
+    for (const u of report.unsubstantiated) list.append(element('li', u.run.slice(0,10)));
+    target.append(list);
+  }
 }

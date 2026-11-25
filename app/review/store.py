@@ -11,6 +11,10 @@ SCHEMA = '''CREATE TABLE IF NOT EXISTS runs (
     note TEXT NOT NULL DEFAULT '', reviewed TEXT
 );'''
 
+MONTHLY_SCHEMA = '''CREATE TABLE IF NOT EXISTS monthly (
+    id TEXT PRIMARY KEY, report TEXT NOT NULL, created TEXT NOT NULL
+);'''
+
 
 class Store:
     def __init__(self, path):
@@ -22,6 +26,7 @@ class Store:
         with closing(sqlite3.connect(self.path, timeout=15)) as db, db:
             db.row_factory = sqlite3.Row
             db.execute(SCHEMA)
+            db.execute(MONTHLY_SCHEMA)
             yield db
 
     def register(self, run_id, report):
@@ -50,3 +55,22 @@ class Store:
             if cursor.rowcount != 1:
                 raise DomainIssue('STALE_REVIEW')
         return self.load(run_id)
+
+    def register_monthly(self, monthly_id, report):
+        with self.connect() as db:
+            db.execute('INSERT INTO monthly(id,report,created) VALUES (?,?,?) ON CONFLICT(id) DO NOTHING',
+                       (monthly_id,json.dumps(report,ensure_ascii=False),report['manifest']['created']))
+        return self.load_monthly(monthly_id)
+
+    def load_monthly(self, monthly_id):
+        with self.connect() as db:
+            row = db.execute('SELECT * FROM monthly WHERE id=?',(monthly_id,)).fetchone()
+        if row is None:
+            raise DomainIssue('MONTHLY_NOT_FOUND')
+        result = dict(row)
+        result['report'] = json.loads(result['report'])
+        return result
+
+    def list_monthly(self):
+        with self.connect() as db:
+            return [dict(r) for r in db.execute('SELECT id,created FROM monthly ORDER BY created DESC,id LIMIT 50')]

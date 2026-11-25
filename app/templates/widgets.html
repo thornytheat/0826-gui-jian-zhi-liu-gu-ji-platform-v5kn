@@ -40,6 +40,13 @@
     <div class="review-actions"><button name="decision" value="HELD">暂缓</button><button class="action" name="decision" value="APPROVED">签发</button></div>
     <a id="evidence">下载复核证据</a>
   </form>
+  <section class="monthly" aria-label="月末合并">
+    <h2>月末合并</h2>
+    <p class="hint">勾选已签发批次后出月报；同一批组合重复出报不会新增。</p>
+    <button id="compile" type="button" disabled>生成月报</button>
+    <ul id="monthly-list"></ul>
+    <div id="monthly-detail"></div>
+  </section>
 </aside>
 {% endmacro %}
 {% macro status() %}

@@ -17,4 +17,6 @@ def prepare(rows):
             raise DomainIssue('PICKUP_BEFORE_ENTRY')
         exits[key] = time
     observations = [(min(exits.get(k,cutoff),cutoff)-t,exits.get(k,cutoff+1)<=cutoff) for k,t in entry.items()]
-    return prepared(len(observations),{'cutoff':cutoff,'censored':sum(not picked for _,picked in observations)},(observations,window['observed'],window['basis_points']))
+    items = [dict(parcel=k,entry=t,exit=exits.get(k),cutoff=cutoff) for k,t in sorted(entry.items())]
+    prep, payload = prepared(len(observations),{'cutoff':cutoff,'censored':sum(not picked for _,picked in observations)},(observations,window['observed'],window['basis_points']))
+    return prep, payload, items

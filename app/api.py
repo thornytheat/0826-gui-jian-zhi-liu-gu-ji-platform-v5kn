@@ -4,6 +4,7 @@ from app.business import DomainIssue
 from app.evidence.render import artifact
 from app.inputs import read_input
 from app.modules.pipeline import run
+from app.monthly.service import compile_report
 from app.review.service import execute, review
 
 api = Blueprint('api',__name__,url_prefix='/api')
@@ -40,3 +41,16 @@ def export(run_id):
         'Content-Disposition':f'attachment; filename="review-{report["id"][:12]}.json"',
         'Cache-Control':'no-store',
     })
+
+
+@api.route('/monthly',methods=['GET','POST'])
+def monthly():
+    store = current_app.extensions['runs']
+    if request.method == 'GET':
+        return jsonify(items=store.list_monthly())
+    return jsonify(compile_report(store,request.get_json(silent=True)))
+
+
+@api.get('/monthly/<monthly_id>')
+def monthly_detail(monthly_id):
+    return jsonify(current_app.extensions['runs'].load_monthly(monthly_id))

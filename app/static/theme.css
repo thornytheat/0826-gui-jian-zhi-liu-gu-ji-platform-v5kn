@@ -1,0 +1,71 @@
+:root {--bg:#252428;--surface:#343136;--ink:#fcf1ef;--accent:#f89994;--radius:24px;
+--line:color-mix(in srgb,#fcf1ef 22%,#343136);--soft:color-mix(in srgb,#f89994 11%,#343136);
+--muted:color-mix(in srgb,#fcf1ef 77%,#343136);--rail:color-mix(in srgb,#f89994 8%,#252428);
+--fault:#ffb6a7;--pad:17px;--gap:14px;--row:37px;
+--font-ui:"Trebuchet MS","PingFang SC",sans-serif;--font-num:ui-monospace,monospace;
+--bar:55px;--nav:212px;--stroke:3px;--lift:2px;
+color-scheme:dark}
+body.survival {margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-ui)}
+.survival * {box-sizing:border-box}
+.survival [hidden] {display:none!important}
+.survival .desk-survival {display:grid;grid-template-columns:var(--nav) minmax(0,1fr);min-height:100vh}
+.survival .work-survival {display:flex;flex-direction:column;min-width:0}
+.survival .rail {background:var(--rail);position:sticky;top:0;align-self:start;height:100vh;padding:calc(1.45 * var(--pad)) var(--pad);border-right:1px solid var(--line)}
+.survival .brand {display:grid;place-content:center;width:52px;height:54px;border-radius:var(--radius);border:var(--stroke) solid var(--accent);font:700 26px/1 var(--font-ui);text-decoration:none}
+.survival .stages {display:grid;gap:6px;margin:28px 0 16px}
+.survival .stages button,.rail-link {text-align:left;display:block;width:100%;overflow-wrap:anywhere}
+.survival .rail-link {padding:.6em .75em;color:var(--muted)}
+.survival .mast {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--surface);padding:calc(.72 * var(--pad)) calc(1.5 * var(--pad));min-height:var(--bar);border-bottom:1px solid var(--line)}
+.survival .mast h1 {font-size:clamp(22px,3vw,36px);line-height:1.12;margin:0}
+.survival .role {color:var(--muted);margin:0;font-weight:600}
+.survival .main-survival {flex:1;display:grid;grid-template-areas:"s s" "c k" "c i" "r r" "a a";grid-template-columns:minmax(0,1.6fr) minmax(0,.9fr);gap:var(--gap);align-content:start;padding:var(--pad)}
+.survival .source {grid-area:s;display:flex;align-items:center;flex-wrap:wrap;gap:var(--gap);padding:var(--pad);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);min-width:0}
+.survival .source input {position:absolute;width:1px;height:1px;opacity:0}
+.survival .source:has(input:focus-visible) .file {outline:2px solid var(--accent);outline-offset:3px}
+.survival .file {cursor:pointer;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.survival #file-name {overflow-wrap:anywhere;max-width:100%}
+.survival button,select,textarea {font:inherit;color:inherit;border:1px solid var(--line);padding:.42em .68em;background:var(--soft);border-radius:var(--radius);cursor:pointer}
+.survival button:is(:hover,[aria-pressed="true"]),.action {background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.survival button:disabled {opacity:.56;cursor:default}
+.survival :focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+.survival a {color:var(--accent);text-underline-offset:.2em}
+.survival .kpis {grid-area:k;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);min-width:0}
+.survival .metric {background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad);display:grid;align-content:center;overflow-wrap:anywhere}
+.survival .metric strong {font:600 clamp(21px,3.2vw,38px)/1.1 var(--font-num);font-variant-numeric:tabular-nums}
+.survival .panel {background:var(--surface);padding:var(--pad);min-width:0;border:1px solid var(--line);border-radius:var(--radius)}
+.survival .results {grid-area:r}
+.survival .chart {grid-area:c}
+.survival .inspection {grid-area:i}
+.survival .archive {grid-area:a}
+.survival h2 {font-size:17px;margin:0 0 .65em}
+.survival .panel-head {display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between}
+.survival #counts,#run-status {color:var(--muted);overflow-wrap:anywhere}
+.survival .scroll {overflow:auto;max-height:263px}
+.survival table {border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;min-width:350px}
+.survival th,td {text-align:left;height:var(--row);padding:4px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
+.survival th {position:sticky;top:0;background:var(--surface);color:var(--muted)}
+.survival td:nth-child(n+2):nth-child(-n+4) {text-align:right;font-family:var(--font-num)}
+.survival .badge {color:var(--fault);font-size:.87em;padding:2px 4px;white-space:nowrap}
+.survival .badge:is([data-result="READY"],[data-result="APPROVED"]) {color:var(--accent)}
+.survival #detail {margin:0;max-height:260px;overflow:auto;overflow-wrap:anywhere;font: .94em/1.55 var(--font-ui)}
+.survival #detail dl {margin:0 0 0 .55em;padding-left:.65em;border-left:1px solid var(--line)}
+.survival #detail dt {font-weight:600;color:var(--muted)}
+.survival #detail dd {margin:0 0 .43em .4em}
+.survival #history {list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:var(--gap);margin:0}
+.survival #history li {display:flex;align-items:center;flex-wrap:wrap}
+.survival #review {margin-top:14px;max-width:580px}
+.survival textarea {display:block;width:100%;min-height:54px;cursor:text}
+.survival .review-actions {display:flex;gap:6px;margin:8px 0}
+.survival .statusbar {display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;border-top:1px solid var(--line);padding:10px var(--pad);color:var(--muted)}
+.survival [data-failure="true"] {color:var(--fault)}
+.survival .rail{border:0;background:color-mix(in srgb,var(--accent) 10%,var(--bg))}
+.survival .chart{border-radius:0 40px 40px 0}
+.survival .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.survival .metric{border-radius:99px;text-align:center}
+@media(max-width:1110px) {.survival .main-survival {grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"s s" "k k" "c i" "r r" "a a"} }
+@media(max-width:700px) {.survival .desk-survival {display:block} .survival .rail {position:static;height:auto;border:0;padding:9px var(--pad)} .survival .brand,.survival .rail-link {display:none} .survival .stages {margin:0;display:flex;flex-wrap:wrap} .survival .stages button {width:auto} .survival .main-survival {grid-template-columns:minmax(0,1fr);grid-template-areas:"s" "k" "c" "r" "i" "a"} .survival .kpis {grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media print {.survival .source,.survival .rail,.survival .archive,.survival .statusbar {display:none} .survival .desk-survival,.survival .main-survival {display:block} .survival .panel {margin-bottom:8px} }
+
+.survival-curve{background:repeating-linear-gradient(0deg,var(--bg) 0 24px,var(--line) 25px 26px);border-inline-start:1px solid var(--line)}.survival-curve svg{display:block;width:100%;max-height:195px}.survival-curve path{fill:none;stroke:var(--accent);stroke-width:3}.curve-labels{display:flex;gap:10px;flex-wrap:wrap;padding-top:10px}.curve-tick{color:var(--accent);font-family:var(--font-num)}
+
+.chart-note{margin-top:9px;color:var(--muted);overflow-wrap:anywhere}
